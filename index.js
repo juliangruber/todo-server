@@ -49,12 +49,20 @@ Server.prototype.listen = function (port, cb) {
   var self = this;
 
   var server = net.createServer(function (con) {
+    var ended = false;
     con.pause();
+    con.once('end', function () {
+      var ended = true;
+    });
     self.getDocument(function (err, doc) {
+      if (ended) return;
+      
       if (err) return con.write(JSON.stringify(err));
 
       con.pipe(doc.createStream()).pipe(con);  
       con.resume();
+
+      con.once('end', doc.dispose.bind(doc));
     });
   })
 

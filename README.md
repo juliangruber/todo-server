@@ -36,6 +36,8 @@ Create a new Server that stores its data in a
 Calls `cb` with `(err, doc)` where `doc` is the underlying
 [CRDT](https://github.com/dominictarr/crdt) document.
 
+Don't forget to call `doc.dispose()` when you're done.
+
 ### Server#listen(port)
 
 Start listening on `port`. Returns a `net.server`.
