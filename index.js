@@ -18,11 +18,12 @@ module.exports = Server;
 function Server (path) {
   if (!(this instanceof Server)) return new Server(path);
 
-  this.db = SubLevel(levelup(path)).sublevel('crdt');
+  this.db = SubLevel(levelup(path));
+  this.crdt = this.db.sublevel('crdt');
 
   debug('udid: %s', udid);
 
-  levelScuttlebutt(this.db, udid, function (name) {
+  levelScuttlebutt(this.crdt, udid, function (name) {
     return new Doc();
   });
 }
@@ -34,7 +35,7 @@ function Server (path) {
  */
 
 Server.prototype.getDocument = function (cb) {
-  this.db.open('crdt', cb);
+  this.crdt.open('crdt', cb);
 }
 
 /**
@@ -69,3 +70,13 @@ Server.prototype.listen = function (port, cb) {
   server.listen(port, cb || function () {});
   return server;
 }
+
+/**
+ * Free the underlying LevelDB.
+ *
+ * @param {Function=} cb
+ */
+
+Server.prototype.close = function (cb) {
+  this.db.close(cb || function () {});
+};

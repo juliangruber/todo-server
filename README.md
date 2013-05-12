@@ -42,6 +42,10 @@ Don't forget to call `doc.dispose()` when you're done.
 
 Start listening on `port`. Returns a `net.server`.
 
+### Server#close([cb])
+
+Shut down and free the underlying LevelDB.
+
 ## CLI
 
 ```bash
